@@ -1,0 +1,45 @@
+version: '3'
+services:
+  ballot-database:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=backlogballot
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=backlogballot
+    restart: on-failure
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/:/backlog-ballot-backend
+    links:
+      - ballot-database
+    depends_on:
+      - ballot-database
+    environment:
+        - FLASK_ENV=devel
+        - FLASK_DEBUG=true
+        - DATABASE_URL=postgresql://backlogballot:password@ballot-database:5432/backlogballot
+        - SECRET_KEY=supersecret
+    restart: on-failure
+    entrypoint: ['./docker-entrypoint.sh']
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    links:
+      - backend
+    depends_on:
+      - backend
+    restart: on-failure
+    command: ng serve --host 0.0.0.0
