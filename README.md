@@ -1,5 +1,6 @@
 # backlog-ballot
-A WebApp for uses to vote on issues to be prioritized from a JIRA backlog
+
+A WebApp that allows users to vote on issues to be prioritized from a JIRA backlog
 
 # Steps for creating the project in OpenShift
 
