@@ -11,7 +11,7 @@ class Config(object):
     elif 'POSTGRESQL_USER' in os.environ and\
             'POSTGRESQL_PASSWORD' in os.environ and\
             'POSTGRESQL_DB' in os.environ and\
-            'POSTGRESQL_HOST' in os.envion:
+            'POSTGRESQL_HOST' in os.environ:
         user = os.environ['POSTGRESQL_USER']
         pw = os.environ['POSTGRESQL_PASSWORD']
         db = os.environ['POSTGRESQL_DB']
