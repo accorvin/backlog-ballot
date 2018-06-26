@@ -6,7 +6,9 @@ A WebApp for uses to vote on issues to be prioritized from a JIRA backlog
   * First, login with the necessary `oc login` command
 
   * Create the project
-    ```oc new-project backlog-ballot```
+    ```
+    oc new-project backlog-ballot
+    ```
 
   * Create the database secret
     ```
@@ -15,7 +17,11 @@ A WebApp for uses to vote on issues to be prioritized from a JIRA backlog
     ```
 
   * Upload the template
-    ```oc create -f backlog-ballot-openshift-template.yml```
+    ```
+    oc create -f backlog-ballot-openshift-template.yml
+    ```
 
   * Apply the template
-    ```oc process backlog-ballot-template | oc apply -f -```
+    ```
+    oc process backlog-ballot-template | oc apply -f -
+    ```
