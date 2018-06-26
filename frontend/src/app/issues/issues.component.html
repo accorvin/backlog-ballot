@@ -1,4 +1,4 @@
-<div *ngIf="issues.length > 0" id="pf-list-standard" class="list-group list-view-pf list-view-pf-view">
+<div *ngIf="issues && issues.length > 0" id="pf-list-standard" class="list-group list-view-pf list-view-pf-view">
     <div *ngFor="let issue of issues" class="list-group-item" (click)="onSelect(issue)" [class.selected]="issue === selectedIssue">
         <div class="list-view-pf-actions">
             <button class="btn btn-primary" (click)="onVote(issue)">Vote For This Issue</button>
@@ -27,6 +27,6 @@
     </div>
 </div>
 
-<div *ngIf="issues.length === 0">
+<div *ngIf="!issues || issues.length === 0">
     <h2>There are no issues to vote on</h2>
 </div>
