@@ -1,0 +1,326 @@
+# Assumes that the secret backlog-ballot-secret has already been created
+# and contains the key database-password
+# for example:
+#   oc create secret generic backlog-ballot-secret \
+#     --from-literal=database-password=$(openssl rand -base64 21)
+apiVersion: v1
+kind: Template
+metadata:
+  name: backlog-ballot-template
+labels:
+  app: backlog-ballot
+parameters:
+- name: POSTGRESQL_USER
+  value: backlogballot
+- name: POSTGRESQL_DATABASE
+  value: backlogballot
+objects:
+
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: backend
+    labels:
+      app: backlog-ballot
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: backlog-ballot-backend:latest
+    source:
+      type: Git
+      git:
+        uri: https://github.com/accorvin/backlog-ballot.git
+      contextDir: backend
+    strategy:
+      type: Docker
+    triggers:
+    - type: ConfigChange
+
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: frontend
+    labels:
+      app: backlog-ballot
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: backlog-ballot-frontend:latest
+    runPolicy: Serial
+    source:
+      git:
+        ref: master
+        uri: https://github.com/accorvin/backlog-ballot.git
+      contextDir: frontend
+      type: Git
+    strategy:
+      sourceStrategy:
+        env:
+        - name: NG_CONFIG
+          value: production
+        from:
+          kind: ImageStreamTag
+          name: s2i-angular-httpd24:latest
+        incremental: true
+      type: Source
+    triggers:
+      - type: ConfigChange
+      - type: ImageChange
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: s2i-angular-httpd24
+    annotations:
+      openshift.io/display-name: Angular
+  spec:
+    tags:
+      - name: latest
+        from:
+          kind: DockerImage
+          name: mprahl/s2i-angular-httpd24:latest
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: backlog-ballot-frontend
+    labels:
+      app: backlog-ballot
+  spec:
+    dockerImageRepository: ""
+    tags:
+      - name: latest
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: backlog-ballot-backend
+    labels:
+      app: backlog-ballot
+  spec:
+    dockerImageRepository: ""
+    tags:
+      - name: latest
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: database
+    labels:
+      app: backlog-ballot
+      service: database
+  spec:
+    replicas: 1
+    selector:
+      deploymentConfig: database
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          deploymentConfig: database
+          app: backlog-ballot
+      spec:
+        containers:
+        - name: database
+          image: registry.access.redhat.com/rhscl/postgresql-95-rhel7:latest
+          imagePullPolicy: Always
+          env:
+            - name: POSTGRESQL_USER
+              value: ${POSTGRESQL_USER}
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backlog-ballot-secret
+                  key: database-password
+            - name: POSTGRESQL_DATABASE
+              value: ${POSTGRESQL_DATABASE}
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: database-volume
+              mountPath: /var/lib/pgsql/data
+        restartPolicy: Always
+        volumes:
+          - name: database-volume
+            persistentVolumeClaim:
+              claimName: database-volume
+    # Manual trigger only, because redeployment will cause an outage
+    triggers:
+      - type: ConfigChange
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: frontend
+    labels:
+      app: backlog-ballot
+      service: frontend
+  spec:
+    replicas: 1
+    selector:
+      deploymentConfig: frontend
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          deploymentConfig: frontend
+          app: backlog-ballot
+      spec:
+        containers:
+        - name: frontend
+          image: backlog-ballot-frontend
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8443
+              protocol: TCP
+          resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        restartPolicy: Always
+    # Manual trigger only, because redeployment will cause an outage
+    triggers:
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          containerNames:
+            - frontend
+          from:
+            kind: ImageStreamTag
+            name: backlog-ballot-frontend:latest
+      - type: ConfigChange
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: backend
+    labels:
+      app: backlog-ballot
+      service: backend
+  spec:
+    replicas: 1
+    selector:
+      deploymentConfig: backend
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          deploymentConfig: backend
+          app: backlog-ballot
+      spec:
+        containers:
+        - name: backend
+          image: backlog-ballot-backend
+          imagePullPolicy: Always
+          env:
+            - name: POSTGRESQL_USER
+              value: ${POSTGRESQL_USER}
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backlog-ballot-secret
+                  key: database-password
+            - name: POSTGRESQL_DB
+              value: ${POSTGRESQL_DATABASE}
+            - name: POSTGRESQL_HOST
+              value: database
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+        restartPolicy: Always
+    # Manual trigger only, because redeployment will cause an outage
+    triggers:
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          containerNames:
+            - backend
+          from:
+            kind: ImageStreamTag
+            name: backlog-ballot-backend:latest
+      - type: ConfigChange
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: frontend
+    labels:
+      app: backlog-ballot
+  spec:
+    selector:
+      deploymentConfig: frontend
+    ports:
+      - name: https
+        port: 443
+        protocol: TCP
+        targetPort: 8443
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: database
+    labels:
+      app: backlog-ballot
+  spec:
+    selector:
+      deploymentConfig: database
+    ports:
+      - port: 5432
+        targetPort: 5432
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: backend
+    labels:
+      app: backlog-ballot
+  spec:
+    selector:
+      deploymentConfig: backend
+    ports:
+      - port: 5000
+        targetPort: 5000
+
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: frontend
+    labels:
+      app: backlog-ballot
+  spec:
+    port:
+      targetPort: https
+    to:
+      kind: Service
+      name: frontend
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: passthrough
+
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: database-volume
+    labels:
+      app: backlog-ballot
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: "1Gi"
