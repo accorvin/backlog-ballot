@@ -19,7 +19,7 @@ export class IssueService {
 
   constructor(private http: HttpClient) { }
 
-  getIssues(): Observable {
+  getIssues(): Observable<any> {
     return this.http.get<Issue[]>('http://127.0.0.1:5000/api/issues/all')
       .pipe(
         tap(issues => console.log(`fetched issues`)),
@@ -27,7 +27,7 @@ export class IssueService {
       );
   }
 
-  voteForIssue(issue: Issue): Observable<Issue> {
+  voteForIssue(issue: Issue): Observable<any> {
     return this.http.post<Issue>('http://127.0.0.1:5000/api/issues/vote',
       {"issueId": issue.id}, httpOptions).pipe(
       tap(_ => console.log(`Service: Voted for isssue id=$(issue.id}`)),
