@@ -1,0 +1,13 @@
+Authlib
+Flask
+flask-cors
+Flask-Script
+Flask-SQLAlchemy
+Flask-Migrate
+python-jose-cryptodome
+six
+psycopg2-binary
+Flask-Testing
+gunicorn
+flake8
+pytest
