@@ -1,0 +1,32 @@
+<div *ngIf="issues.length > 0" id="pf-list-standard" class="list-group list-view-pf list-view-pf-view">
+    <div *ngFor="let issue of issues" class="list-group-item" (click)="onSelect(issue)" [class.selected]="issue === selectedIssue">
+        <div class="list-view-pf-actions">
+            <button class="btn btn-primary" (click)="onVote(issue)">Vote For This Issue</button>
+        </div>
+        <div class="list-view-pf-main-info">
+            <div class="list-view-pf-left">
+                <span class="fa pficon-orders list-view-pf-icon-sm"></span>
+            </div>
+            <div class="list-view-pf-body">
+                <div class="list-view-pf-description">
+                    <div class="list-group-item-heading">
+                        {{ issue.jiraKey }}
+                    </div>
+                    <div class="list-group-item-text">
+                        {{ issue.title }}
+                    </div>
+                </div>
+                <div class="list-view-pf-additional-info">
+                    <div class="list-view-pf-additional-info-item">
+                        <span class="pficon pficon-rebalance"></span>
+                        <strong>{{ issue.voteCount }}</strong> Votes
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="issues.length === 0">
+    <h2>There are no issues to vote on</h2>
+</div>
