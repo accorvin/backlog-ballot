@@ -9,8 +9,10 @@ A WebApp for uses to vote on issues to be prioritized from a JIRA backlog
     ```oc new-project backlog-ballot```
 
   * Create the database secret
-    ```oc create secret generic backlog-ballot-secret \
-       --from-literal=database-password=$(openssl rand -base64 21)```
+    ```
+    oc create secret generic backlog-ballot-secret \
+    --from-literal=database-password=$(openssl rand -base64 21)
+    ```
 
   * Upload the template
     ```oc create -f backlog-ballot-openshift-template.yml```
