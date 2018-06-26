@@ -94,14 +94,6 @@ objects:
       type: Source
     triggers:
       - type: ConfigChange
-      - type: ImageChange
-    resources:
-      requests:
-        cpu: 500m
-        memory: 1Gi
-      limits:
-        cpu: 500m
-        memory: 1Gi
 
 - apiVersion: v1
   kind: ImageStream
