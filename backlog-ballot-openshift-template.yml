@@ -321,7 +321,7 @@ objects:
                     value: ${BACKLOG_BALLOT_JIRA_SERVER}
                   - name: BACKLOG_BALLOT_BACKEND
                     value: ${BACKLOG_BALLOT_BACKEND}
-            restartPolicy: OnFailure
+            restartPolicy: Never
         triggers:
           - type: ImageChange
             imageChangeParams:
