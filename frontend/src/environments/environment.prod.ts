@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  api: 'http://backend:5000/api/'
+  api: 'https://https://backend-backlog-ballot.192.168.64.3.nip.io/api/'
 };

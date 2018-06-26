@@ -313,6 +313,22 @@ objects:
       termination: passthrough
 
 - apiVersion: v1
+  kind: Route
+  metadata:
+    name: backend
+    labels:
+      app: backlog-ballot
+  spec:
+    port:
+      targetPort: 5000
+    to:
+      kind: Service
+      name: backend
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+
+- apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
     name: database-volume
