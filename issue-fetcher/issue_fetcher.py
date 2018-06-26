@@ -11,7 +11,7 @@ BACKLOG_BALLOT_BACKEND = os.environ['BACKLOG_BALLOT_BACKEND']
 
 client_args = {
     'server': JIRA_SERVER,
-    'options': dict(verify='/etc/pki/tls/certs/ca-bundle.crt'),
+    'options': dict(verify=False),
 }
 client = jira.client.JIRA(**client_args)
 issues = client.search_issues(JIRA_QUERY, maxResults=False)
