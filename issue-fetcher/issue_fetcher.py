@@ -5,7 +5,7 @@ import os
 import requests
 
 
-JIRA_QUERY = os.environ['BACKLOG_BALLOG_QUERY']
+JIRA_QUERY = os.environ['BACKLOG_BALLOT_QUERY']
 JIRA_SERVER = os.environ['BACKLOG_BALLOT_JIRA_SERVER']
 BACKLOG_BALLOT_BACKEND = os.environ['BACKLOG_BALLOT_BACKEND']
 

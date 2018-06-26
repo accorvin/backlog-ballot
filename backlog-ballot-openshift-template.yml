@@ -14,7 +14,34 @@ parameters:
   value: backlogballot
 - name: POSTGRESQL_DATABASE
   value: backlogballot
+- name: JIRA_QUERY
+  value: project=factory and statusCategory != Done and labels=NeedsVoting
+- name: JIRA_SERVER
+  value: https://projects.engineering.redhat.com
+- name: BACKLOG_BALLOT_BACKEND
+  value: http://backend:5000
 objects:
+
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: issue-fetcher
+    labels:
+      app: backlog-ballot
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: backlog-ballot-issue-fetcher:latest
+    source:
+      type: Git
+      git:
+        uri: https://github.com/accorvin/backlog-ballot.git
+      contextDir: issue-fetcher
+    strategy:
+      type: Docker
+    triggers:
+    - type: ConfigChange
 
 - apiVersion: v1
   kind: BuildConfig
@@ -104,6 +131,17 @@ objects:
   kind: ImageStream
   metadata:
     name: backlog-ballot-backend
+    labels:
+      app: backlog-ballot
+  spec:
+    dockerImageRepository: ""
+    tags:
+      - name: latest
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: backlog-ballot-issue-fetcher
     labels:
       app: backlog-ballot
   spec:
@@ -254,6 +292,45 @@ objects:
             kind: ImageStreamTag
             name: backlog-ballot-backend:latest
       - type: ConfigChange
+
+- apiVersion: batch/v2alpha1
+  kind: CronJob
+  metadata:
+    name: issue-fetcher
+    labels:
+      app: backlog-ballot
+  spec:
+    successfulJobsHistoryLimit: 10
+    failedJobsHistoryLimit: 5
+    schedule: "0/5 * * * *"
+    jobTemplate:
+      spec:
+        template:
+          metadata:
+            labels:
+              parent: "cronjobissuefecther"
+          spec:
+            containers:
+              - name: issue-fetcher
+                image: 172.30.1.1:5000/backlog-ballot/backlog-ballot-issue-fetcher:latest
+                imagePullPolicy: Always
+                env:
+                  - name: JIRA_QUERY
+                    value: ${JIRA_QUERY}
+                  - name: JIRA_SERVER
+                    value: ${JIRA_SERVER}
+                  - name: BACKLOG_BALLOT_BACKEND
+                    value: ${BACKLOG_BALLOT_BACKEND}
+            restartPolicy: OnFailure
+        triggers:
+          - type: ImageChange
+            imageChangeParams:
+              automatic: true
+              containerNames:
+                - issue-fetcher
+              from:
+                kind: ImageStreamTag
+                name: backlog-ballot-issue-fetcher:latest
 
 - apiVersion: v1
   kind: Service
