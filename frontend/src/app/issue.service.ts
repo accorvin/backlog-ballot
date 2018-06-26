@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { Issue } from './issue';
+import { environment } from '../../environments/environment';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
