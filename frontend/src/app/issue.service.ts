@@ -17,10 +17,13 @@ const httpOptions = {
 })
 export class IssueService {
 
+  readonly backendUrl: String = environment.api
+
   constructor(private http: HttpClient) { }
 
   getIssues(): Observable<any> {
-    return this.http.get<Issue[]>('http://127.0.0.1:5000/api/issues/all')
+    const url = `${this.backendUrl}issues/all`
+    return this.http.get<Issue[]>(url)
       .pipe(
         tap(issues => console.log(`fetched issues`)),
         catchError(this.handleError('getIssues', []))
@@ -28,7 +31,8 @@ export class IssueService {
   }
 
   voteForIssue(issue: Issue): Observable<any> {
-    return this.http.post<Issue>('http://127.0.0.1:5000/api/issues/vote',
+    const url = `${this.backendUrl}issues/vote`
+    return this.http.post<Issue>(url,
       {"issueId": issue.id}, httpOptions).pipe(
       tap(_ => console.log(`Service: Voted for isssue id=$(issue.id}`)),
       catchError(this.handleError<any>('voteForIssue'))
