@@ -20,6 +20,6 @@ export class IssueDetailComponent implements OnInit {
 
   openModal(): void {
     console.log('Attempting to open modal');
-    this.modalService.open(this.content, { centered: true });
+    this.modalService.open(this.content, { size: 'lg', centered: true });
   }
 }
