@@ -22,6 +22,8 @@ parameters:
   value: http://backend:5000
 - name: BACKEND_ROUTE
   value: https://backend-backlog-ballot.192.168.64.3.nip.io/api/
+- name: FRONTEND_HOSTNAME
+  value: frontend-backlog-ballot.192.168.64.3.nip.io
 objects:
 
 - apiVersion: v1
@@ -381,6 +383,7 @@ objects:
     labels:
       app: backlog-ballot
   spec:
+    host: ${FRONTEND_HOSTNAME}
     port:
       targetPort: https
     to:
