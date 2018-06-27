@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Issue } from '../issue';
 import { IssueService } from '../issue.service';
@@ -15,15 +16,16 @@ export class IssuesComponent implements OnInit {
   selectedIssue: Issue;
   @ViewChild(IssueDetailComponent) issueDetailComponent;
 
-  constructor(private issueService: IssueService) { }
+  constructor(private issueService: IssueService,
+              private modalService: NgbModal ) { }
 
   ngOnInit() {
     this.getIssues();
   }
 
-  onSelect(issue: Issue, component: IssueDetailComponent): void {
+  onSelect(issue: Issue, content): void {
     this.selectedIssue = issue;
-    //this.issueDetailComponent.openModal();
+    this.issueDetailComponent.openModal();
   }
 
   onVote(issue: Issue): void {
