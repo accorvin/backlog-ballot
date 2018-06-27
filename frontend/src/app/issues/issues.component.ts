@@ -28,7 +28,8 @@ export class IssuesComponent implements OnInit {
     this.issueDetailComponent.openModal();
   }
 
-  onVote(issue: Issue): void {
+  onVote(event, issue: Issue): void {
+    event.stopPropagation();
     this.issueService.voteForIssue(issue)
     .subscribe(issues => {
       this.issues = issues.issues;
