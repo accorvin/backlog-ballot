@@ -2,7 +2,13 @@
 
 A WebApp that allows users to vote on issues to be prioritized from a JIRA backlog
 
-# Steps for creating the project in OpenShift
+# Running locally
+
+The easiest way to run the application locally is via docker-compose.
+Simply run the command `docker-compose up -d` from the repo root.
+The frontend will be available at http://localhost:4200
+
+# Steps for deploying the tool in OpenShift
 
   * First, login with the necessary `oc login` command
 
@@ -22,7 +28,12 @@ A WebApp that allows users to vote on issues to be prioritized from a JIRA backl
     oc create -f backlog-ballot-openshift-template.yml
     ```
 
+  * Define your parameters
+
+    Specify the necessary openshift parameters for your deployment. An example
+    can be found in `open.paas.params.env`
+
   * Apply the template
     ```
-    oc process backlog-ballot-template | oc apply -f -
+    oc process backlog-ballot-template --param-file=$PARAM_FILE | oc apply -f -
     ```
