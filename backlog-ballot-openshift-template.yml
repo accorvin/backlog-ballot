@@ -20,6 +20,8 @@ parameters:
   value: https://projects.engineering.redhat.com
 - name: BACKLOG_BALLOT_BACKEND
   value: http://backend:5000
+- name: BACKEND_ROUTE
+  value: https://backend-backlog-ballot.192.168.64.3.nip.io/api/
 objects:
 
 - apiVersion: v1
@@ -221,7 +223,14 @@ objects:
           limits:
             cpu: 500m
             memory: 512Mi
+          volumeMounts:
+            - name: frontend-config-volume
+              mountPath: /opt/apt-root/src/src/environments/
         restartPolicy: Always
+        volumes:
+          - name: frontend-config-volume
+            configMap:
+              name: frontend-configmap
     # Manual trigger only, because redeployment will cause an outage
     triggers:
       - type: ImageChange
@@ -409,3 +418,16 @@ objects:
     resources:
       requests:
         storage: "1Gi"
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: frontend-configmap
+    labels:
+      app: backlog-ballot
+  data:
+    environment.prod.ts: |-
+      export const environment = {
+        production: true,
+        api: '${BACKEND_ROUTE}'
+      };
