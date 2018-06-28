@@ -77,6 +77,13 @@ objects:
     labels:
       app: backlog-ballot
   spec:
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 500m
+        memory: 1Gi
     output:
       to:
         kind: ImageStreamTag
