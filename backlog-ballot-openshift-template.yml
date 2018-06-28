@@ -235,7 +235,7 @@ objects:
             memory: 512Mi
           volumeMounts:
             - name: frontend-config-volume
-              mountPath: /opt/apt-root/src/src/environments/
+              mountPath: /opt/app-root/src/src/environments/
         restartPolicy: Always
         volumes:
           - name: frontend-config-volume
