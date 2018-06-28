@@ -191,8 +191,7 @@ objects:
             persistentVolumeClaim:
               claimName: database-volume
     # Manual trigger only, because redeployment will cause an outage
-    triggers:
-      - type: ConfigChange
+    triggers: []
 
 - apiVersion: v1
   kind: DeploymentConfig
@@ -235,7 +234,6 @@ objects:
           - name: frontend-config-volume
             configMap:
               name: frontend-configmap
-    # Manual trigger only, because redeployment will cause an outage
     triggers:
       - type: ImageChange
         imageChangeParams:
@@ -245,7 +243,6 @@ objects:
           from:
             kind: ImageStreamTag
             name: backlog-ballot-frontend:latest
-      - type: ConfigChange
 
 - apiVersion: v1
   kind: DeploymentConfig
@@ -286,7 +283,6 @@ objects:
             - containerPort: 5000
               protocol: TCP
         restartPolicy: Always
-    # Manual trigger only, because redeployment will cause an outage
     triggers:
       - type: ImageChange
         imageChangeParams:
@@ -296,7 +292,6 @@ objects:
           from:
             kind: ImageStreamTag
             name: backlog-ballot-backend:latest
-      - type: ConfigChange
 
 - apiVersion: batch/v2alpha1
   kind: CronJob
