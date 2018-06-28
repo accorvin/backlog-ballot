@@ -24,6 +24,8 @@ parameters:
   value: https://backend-backlog-ballot.192.168.64.3.nip.io/api/
 - name: FRONTEND_HOSTNAME
   value: frontend-backlog-ballot.192.168.64.3.nip.io
+- name: ISSUE_FETCHER_IMAGE
+  value: 172.30.1.1:5000/backlog-ballot/backlog-ballot-issue-fetcher:latest
 objects:
 
 - apiVersion: v1
@@ -315,7 +317,7 @@ objects:
           spec:
             containers:
               - name: issue-fetcher
-                image: 172.30.1.1:5000/backlog-ballot/backlog-ballot-issue-fetcher:latest
+                image: ${ISSUE_FETCHER_IMAGE} 
                 imagePullPolicy: Always
                 env:
                   - name: BACKLOG_BALLOT_QUERY
