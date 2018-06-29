@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  api: 'CHANGEME'
+  api: 'https://backend-factory-backlog-ballot.int.open.paas.redhat.com/api/'
 };

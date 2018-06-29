@@ -436,5 +436,5 @@ objects:
     environment.prod.ts: |-
       export const environment = {
         production: true,
-        api: '${BACKEND_ROUTE}'
+        api: '${BACKEND_ROUTE}api/'
       };

@@ -33,6 +33,11 @@ The frontend will be available at http://localhost:4200
     Specify the necessary openshift parameters for your deployment. An example
     can be found in `open.paas.params.env`
 
+  * Modify `frontend/src/environments/environment.prod.ts` so that the
+    `api` variable points to `${BACKEND_ROUTE}/api/`. This shouldn't be
+    necessary, as the value should get taken from the templated configmap,
+    but I wasn't able to get this working correctly.
+
   * Apply the template
     ```
     oc process backlog-ballot-template --param-file=$PARAM_FILE | oc apply -f -
