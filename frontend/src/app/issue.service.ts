@@ -24,6 +24,7 @@ export class IssueService {
 
   getIssues(): Observable<any> {
     const url = `${this.backendUrl}issues/all`
+    console.log('Submitting request to ' + url);
     return this.http.get<Issue[]>(url)
       .pipe(
         tap(issues => console.log(`fetched issues`)),
@@ -33,6 +34,7 @@ export class IssueService {
 
   voteForIssue(issue: Issue): Observable<any> {
     const url = `${this.backendUrl}issues/vote`
+    console.log('Submitting request to ' + url);
     return this.http.post<Issue>(url,
       {"issueId": issue.id}, httpOptions).pipe(
       tap(_ => console.log(`Service: Voted for isssue id=$(issue.id}`)),
