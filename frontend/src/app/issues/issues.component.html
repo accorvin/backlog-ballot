@@ -10,7 +10,7 @@
             <div class="list-view-pf-body">
                 <div class="list-view-pf-description">
                     <div class="list-group-item-heading">
-                        {{ issue.jiraKey }}
+                        <a href="{{ issue.jiraIssueUrl }}" target="new" (click)="$event.stopPropagation()">{{ issue.jiraKey }}</a>
                     </div>
                     <div class="list-group-item-text">
                         {{ issue.title }}
