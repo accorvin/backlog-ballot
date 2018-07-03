@@ -13,6 +13,7 @@ import { IssueDetailComponent } from '../issue-detail/issue-detail.component';
 export class IssuesComponent implements OnInit {
 
   issues: Issue[];
+  votedOnIssues: String[];
   selectedIssue: Issue;
   @ViewChild(IssueDetailComponent) issueDetailComponent;
 
@@ -21,6 +22,8 @@ export class IssuesComponent implements OnInit {
 
   ngOnInit() {
     this.getIssues();
+    this.votedOnIssues = JSON.parse(localStorage.getItem('votedOnIssues') || '[]');
+    console.log('Issues already voted on: ' + this.votedOnIssues);
   }
 
   onSelect(issue: Issue, content): void {
@@ -35,6 +38,8 @@ export class IssuesComponent implements OnInit {
       this.issues = issues.issues;
       console.log('Voted for issue');
     });
+    this.votedOnIssues.push(issue.jiraKey);
+    localStorage.setItem('votedOnIssues', JSON.stringify(this.votedOnIssues));
   }
 
   getIssues(): void {

@@ -1,7 +1,7 @@
 <div *ngIf="issues && issues.length > 0" id="pf-list-standard" class="list-group list-view-pf list-view-pf-view">
     <div *ngFor="let issue of issues" class="list-group-item" (click)="onSelect(issue, content)" [class.selected]="issue === selectedIssue">
         <div class="list-view-pf-actions">
-            <button class="btn btn-primary" (click)="onVote($event, issue)">Vote For This Issue</button>
+            <button class="btn btn-primary" (click)="onVote($event, issue)" [disabled]="votedOnIssues.indexOf(issue.jiraKey) >= 0">Vote For This Issue</button>
         </div>
         <div class="list-view-pf-main-info">
             <div class="list-view-pf-left">
