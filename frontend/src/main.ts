@@ -8,5 +8,9 @@ if (environment.production) {
   enableProdMode();
 }
 
+const title = document.createElement('title');
+title.innerHTML = environment.title;
+document.head.appendChild(title);
+
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.log(err));

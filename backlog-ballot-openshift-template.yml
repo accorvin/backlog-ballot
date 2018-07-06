@@ -26,6 +26,8 @@ parameters:
   value: frontend-backlog-ballot.192.168.64.3.nip.io
 - name: ISSUE_FETCHER_IMAGE
   value: 172.30.1.1:5000/backlog-ballot/backlog-ballot-issue-fetcher:latest
+- name: TITLE
+  value: Factory 2.0 Backlog
 objects:
 
 - apiVersion: v1
@@ -436,5 +438,6 @@ objects:
     environment.prod.ts: |-
       export const environment = {
         production: true,
-        api: '${BACKEND_ROUTE}api/'
+        api: '${BACKEND_ROUTE}api/',
+        title: '${TITLE}'
       };
