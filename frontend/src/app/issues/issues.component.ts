@@ -16,6 +16,7 @@ export class IssuesComponent implements OnInit {
   votedOnIssues: String[];
   selectedIssue: Issue;
   @ViewChild(IssueDetailComponent) issueDetailComponent;
+  p: number = 1;
 
   constructor(private issueService: IssueService,
               private modalService: NgbModal ) { }

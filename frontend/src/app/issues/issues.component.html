@@ -1,5 +1,5 @@
 <div *ngIf="issues && issues.length > 0" id="pf-list-standard" class="list-group list-view-pf list-view-pf-view">
-    <div *ngFor="let issue of issues" class="list-group-item issue-item" (click)="onSelect(issue, content)" [class.selected]="issue === selectedIssue">
+    <div *ngFor="let issue of issues | paginate: { itemsPerPage: 10, currentPage: p }" class="list-group-item issue-item" (click)="onSelect(issue, content)" [class.selected]="issue === selectedIssue">
         <div class="list-view-pf-actions">
             <button class="btn btn-primary" (click)="onVote($event, issue)" [disabled]="votedOnIssues.indexOf(issue.jiraKey) >= 0">Vote For This Issue</button>
         </div>
@@ -25,6 +25,7 @@
             </div>
         </div>
     </div>
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
 </div>
 
 <app-issue-detail [issue]="selectedIssue"></app-issue-detail>
