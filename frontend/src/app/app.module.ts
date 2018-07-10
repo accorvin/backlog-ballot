@@ -3,6 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NotificationModule } from 'patternfly-ng/notification';
+import {NgxPaginationModule} from 'ngx-pagination';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
@@ -19,6 +20,7 @@ import { IssueDetailComponent } from './issue-detail/issue-detail.component';
     BrowserModule,
     FormsModule,
     NotificationModule,
+    NgxPaginationModule
     NgbModule.forRoot(),
     HttpClientModule,
   ],
