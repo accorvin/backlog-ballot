@@ -20,7 +20,7 @@ import { IssueDetailComponent } from './issue-detail/issue-detail.component';
     BrowserModule,
     FormsModule,
     NotificationModule,
-    NgxPaginationModule
+    NgxPaginationModule,
     NgbModule.forRoot(),
     HttpClientModule,
   ],
